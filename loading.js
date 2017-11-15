@@ -74,7 +74,7 @@ function load() {
                             words[element.charAt(0)] = 1;
                         }
                     }
-                })
+                });
 
                 //Display Statistics
                 console.log("Successfully loaded: ", jsonFiles[data - 1]);
@@ -85,24 +85,11 @@ function load() {
                 console.log('2: Partial search: ');
                 console.log('3: Begins with search: ');
                 console.log('4: Ends with search: ');
-
-                switch(data){
-                  case "1":
-                    console.log(_search.exactMatch(data, wordArr));
-                    break;
-                  case "2":
-                    console.log(_search.partialMatch(data, wordArr));
-                    break;
-                  case "3":
-                    console.log(_search.beginsWith(data, wordArr));
-                    break;
-                  case "4":
-                    console.log(_search.endsWith(data, wordArr));
-                    break;
-                 }
+                startSearch(wordArr);
 
             });
-        } else {
+        }
+         else {
             // All other input is invalid
             showMessage(`Invalid: ${ data }`);
         }
@@ -112,6 +99,83 @@ function load() {
     process.stdin.on('data', onData);
 
 }
+
+function startSearch(wordArr){
+  process.stdin.resume();
+  process.stdin.setEncoding('utf8');
+  var onData = (data) => {
+    data = data.trim();
+    dataArray = data.split(' ');
+    let num = dataArray[0];
+    let str = dataArray[1];
+
+    searchStr(num, str, wordArr);
+    // If user input "next"
+    // let's go to the next
+    // state
+    if (data === "q") {
+      process.stdin.pause();
+      process.stdin.removeListener('data', onData);
+    }//else{
+    //   startSearch();
+    // }
+
+  }
+  process.stdin.removeAllListeners('data');
+//Setting the listener
+  process.stdin.on('data', onData);
+}
+
+//Saving to file
+// function startSearch(){
+//   console.log("Do you want to save results to a file? y filename/n? \'q' quits");
+//   process.stdin.resume();
+//   process.stdin.setEncoding('utf8');
+//   var onData = (data) => {
+//     data = data.trim();
+//     let dataArray = data.split();
+//     let y = dataArray[0];
+//     let filename = dataArray[1];
+//     if(data === 'y'){
+//       fs.writeFile(found.join(), filename, 'utf-8', (err)=>{
+//         if(err) throw err;
+//         console.log("File saved!");
+//       });
+//     }
+//
+//     // If user input "next"
+//     // let's go to the next
+//     // state
+//     if (data === "q") {
+//       process.stdin.pause();
+//       process.stdin.removeListener('data', onData);
+//     }
+//
+//   }
+//   process.stdin.removeAllListeners('data');
+// //Setting the listener
+//   process.stdin.on('data', onData);
+// }
+
+function searchStr(num, str, wordArr=[]){
+  switch(num){
+    case "1":
+      console.log(_search.exactMatch(str, wordArr));
+      break;
+    case "2":
+      console.log(_search.partialMatch(str, wordArr));
+      break;
+    case "3":
+      console.log(_search.beginsWith(str, wordArr));
+      break;
+    case "4":
+      console.log(_search.endsWith(str, wordArr));
+      break;
+ }
+}
+
+
+
 
 //call
 load();
